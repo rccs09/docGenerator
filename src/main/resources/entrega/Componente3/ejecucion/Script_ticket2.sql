@@ -1,0 +1,2 @@
+SELECT * from TABLA_COMPONENTE3:
+Update ticket2
