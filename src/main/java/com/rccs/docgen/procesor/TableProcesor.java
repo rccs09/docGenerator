@@ -13,8 +13,9 @@ import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTbl;
 
-import com.rccs.docgen.beans.ArtfactsFileBean;
+import com.rccs.docgen.beans.ArtifactsFileBean;
 import com.rccs.docgen.beans.PlaceHolderBean;
+import com.rccs.docgen.enums.ComponentType;
 import com.rccs.docgen.enums.DeliveryType;
 import com.rccs.docgen.utils.ProcessDocUtils;
 
@@ -51,15 +52,25 @@ public class TableProcesor {
 	public static List<XWPFTable> processTableWithTemplateUniqueRow(XWPFTable original, PlaceHolderBean placeHolder) {
 		List<XWPFTable> tableList = new ArrayList<XWPFTable>();
 		
-		for (ArtfactsFileBean artifact : placeHolder.getEspecificArtifacts()) {
-			XWPFTable newTable = new XWPFTable((CTTbl)original.getCTTbl().copy(), original.getBody());
-			
-			Map<String, String> placeHolders = new HashMap<String, String>();
-			placeHolders.put("${artifactInstallation}", "Instalación - " + artifact.getComponentType().getType().toUpperCase());
-			placeHolder.setParams(placeHolders);
-			replaceValuesFromTable(newTable, placeHolder);
-			tableList.add(newTable);
+		if(placeHolder.getArtifactsByComponent() != null && placeHolder.getArtifactsByComponent().size() > 0) {
+			//recorre loas artefactos para crear la tabla de cada artefacto
+			for (Map.Entry<ComponentType, List<ArtifactsFileBean>> compGroup : placeHolder.getArtifactsByComponent().entrySet()) {
+				ComponentType component = compGroup.getKey();
+				XWPFTable newTable = new XWPFTable((CTTbl)original.getCTTbl().copy(), original.getBody());
+				
+				Map<String, String> placeHolders = placeHolder.getParamsInstallActions().get(component);
+				if(placeHolders != null) {
+					placeHolder.setParams(placeHolders);
+					replaceValuesFromTable(newTable, placeHolder);
+					tableList.add(newTable);
+				}
+				
+			}
+		}else {
+			System.out.println("processTableWithTemplateUniqueRow -> : La lista de artefactos agrupados por componente esta vacia");
 		}
+		
+		
 
 		return tableList;
 	}
@@ -99,7 +110,7 @@ public class TableProcesor {
 		replaceValuesFromTable(table, placeHolder);
 		switch (placeHolder.getHeaderType()) {
 			case FILE_LOCATION:
-				for (ArtfactsFileBean artifact : placeHolder.getEspecificArtifacts()) {
+				for (ArtifactsFileBean artifact : placeHolder.getEspecificArtifacts()) {
 					XWPFTableRow row = table.createRow();
 					XWPFTableCell cell0 = row.getCell(0);
 					cell0 = cell0==null? row.createCell(): cell0;
@@ -117,7 +128,7 @@ public class TableProcesor {
 				break;
 				
 			case DB_SCRIPT:
-				for (ArtfactsFileBean artifact : placeHolder.getEspecificArtifacts()) {
+				for (ArtifactsFileBean artifact : placeHolder.getEspecificArtifacts()) {
 					XWPFTableRow row = table.createRow();
 					XWPFTableCell celldb0 = row.getCell(0);
 					celldb0 = celldb0==null? row.createCell(): celldb0;
@@ -147,7 +158,7 @@ public class TableProcesor {
 				break;
 				
 			case DB_REVERSE_SCRIPT:
-				for (ArtfactsFileBean artifact : placeHolder.getEspecificArtifacts()) {
+				for (ArtifactsFileBean artifact : placeHolder.getEspecificArtifacts()) {
 					XWPFTableRow row = table.createRow();
 					XWPFTableCell celldbRev0 = row.getCell(0);
 					celldbRev0 = celldbRev0==null? row.createCell(): celldbRev0;

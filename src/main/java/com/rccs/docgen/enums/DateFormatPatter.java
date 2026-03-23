@@ -1,8 +1,12 @@
 package com.rccs.docgen.enums;
 
+/**
+ * Define los formatos de fecha para los distintos espacios de fecha del documento
+ */
 public enum DateFormatPatter {
 	GENERAL("dd/MM/yyyy"),
-	DOCUMENT("dd-MMM-yy"),
+	HEADER("dd-MM-yy"),
+	DOCUMENT("yyyyMMdd"),
 	FTP("dd_MM_yy");
 	
 	private final String pattern;

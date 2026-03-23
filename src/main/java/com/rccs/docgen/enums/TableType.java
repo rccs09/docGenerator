@@ -1,5 +1,8 @@
 package com.rccs.docgen.enums;
 
+/**
+ * Define los tipos de tablas que existiran en el documento
+ */
 public enum TableType {
 	//Tipo1: Tabla sin cabecera, tienen filas y columnas definidas en las que se ingresan campos definidos.
 	WITHOUT_HEADER("SIN_CABECERA_CAMPOS_DEFINIDOS"),

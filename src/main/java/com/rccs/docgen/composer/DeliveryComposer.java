@@ -9,7 +9,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 
-import com.rccs.docgen.beans.ArtfactsFileBean;
+import com.rccs.docgen.beans.ArtifactsFileBean;
 import com.rccs.docgen.beans.DeliveryConfigBean;
 import com.rccs.docgen.beans.HeaderConfigBean;
 import com.rccs.docgen.enums.TableType;
@@ -19,10 +19,10 @@ import com.rccs.docgen.utils.ProcessDocUtils;
 
 public class DeliveryComposer {
 	private final XWPFDocument template;
-	private final List<ArtfactsFileBean> files;
+	private final List<ArtifactsFileBean> files;
 	private final DeliveryConfigBean deliveryConfig;
 
-	public DeliveryComposer(XWPFDocument template, List<ArtfactsFileBean> files, DeliveryConfigBean deliveryConfig) {
+	public DeliveryComposer(XWPFDocument template, List<ArtifactsFileBean> files, DeliveryConfigBean deliveryConfig) {
 		this.template = template;
 		this.files = files;
 		this.deliveryConfig = deliveryConfig;

@@ -4,7 +4,7 @@ import com.rccs.docgen.enums.ArtifactsType;
 import com.rccs.docgen.enums.ComponentType;
 import com.rccs.docgen.enums.ScopeType;
 
-public class ArtfactsFileBean {
+public class ArtifactsFileBean {
 	private String completePath;
 	private String fileName;
 	private ComponentType componentType;
@@ -15,15 +15,16 @@ public class ArtfactsFileBean {
 	private String comment;
 	private String schemadb;
 	private String ftpPath;
+	private String originPath;
 
 	
 	
-	public ArtfactsFileBean() {
+	public ArtifactsFileBean() {
 	}
 
-	public ArtfactsFileBean(String completePath, String fileName, ComponentType componentType,
+	public ArtifactsFileBean(String completePath, String fileName, ComponentType componentType,
 			ArtifactsType artifactsType, ScopeType scopeType, String md5, String action, String comment,
-			String schemadb, String ftpPath) {
+			String schemadb, String ftpPath, String originPath) {
 		this.completePath = completePath;
 		this.fileName = fileName;
 		this.componentType = componentType;
@@ -34,6 +35,7 @@ public class ArtfactsFileBean {
 		this.comment = comment;
 		this.schemadb = schemadb;
 		this.ftpPath = ftpPath;
+		this.originPath = originPath;
 	}
 
 	public String getCompletePath() {
@@ -116,21 +118,20 @@ public class ArtfactsFileBean {
 		this.ftpPath = ftpPath;
 	}
 
+	public String getOriginPath() {
+		return originPath;
+	}
+
+	public void setOriginPath(String originPath) {
+		this.originPath = originPath;
+	}
+
 	@Override
 	public String toString() {
 		return "ArtfactsFileBean [completePath=" + completePath + ", fileName=" + fileName + ", componentType="
 				+ componentType + ", artifactsType=" + artifactsType + ", scopeType=" + scopeType + ", md5=" + md5
 				+ ", action=" + action + ", comment=" + comment + ", schemadb=" + schemadb + ", ftpPath=" + ftpPath
-				+ "]";
+				+ ", originPath=" + originPath + "]";
 	}
-
-//	private String absolutePath;
-//	private String relativePath;
-//	private String md5;
-//	private String action;
-//	private String comment;
-//	private ArtifactsType type;
-//	private String extension;
-//	private String schemadb;
 
 }
