@@ -1,5 +1,8 @@
 package com.rccs.docgen.enums;
 
+/**
+ * Define los tipos de entregas o tipos de documentos por entrega
+ */
 public enum DeliveryType {
 	VERSION("VERSION"),
 	FIX("FIX");

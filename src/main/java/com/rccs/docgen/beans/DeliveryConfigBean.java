@@ -9,17 +9,19 @@ public class DeliveryConfigBean {
 	private String deliveryDate;
 	private String developer;
 	private String process;
+	private String ftp;
 	private String ftpBasePath;
 	private DeliveryType deliveryType;
 	private RequestType requestType;
 	private DeployType deployType;
 
-	public DeliveryConfigBean(String lastVersion, String deliveryDate, String developer, String process,
+	public DeliveryConfigBean(String lastVersion, String deliveryDate, String developer, String process, String ftp,
 			String ftpBasePath, DeliveryType deliveryType, RequestType requestType, DeployType deployType) {
 		this.lastVersion = lastVersion;
 		this.deliveryDate = deliveryDate;
 		this.developer = developer;
 		this.process = process;
+		this.ftp = ftp;
 		this.ftpBasePath = ftpBasePath;
 		this.deliveryType = deliveryType;
 		this.requestType = requestType;
@@ -88,6 +90,14 @@ public class DeliveryConfigBean {
 
 	public void setDeployType(DeployType deployType) {
 		this.deployType = deployType;
+	}
+
+	public String getFtp() {
+		return ftp;
+	}
+
+	public void setFtp(String ftp) {
+		this.ftp = ftp;
 	}
 
 }

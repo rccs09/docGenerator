@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -24,14 +25,20 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
-import com.rccs.docgen.beans.ArtfactsFileBean;
+import com.rccs.docgen.beans.ArtifactsFileBean;
+import com.rccs.docgen.beans.DeliveryConfigBean;
 import com.rccs.docgen.beans.HeaderConfigBean;
 import com.rccs.docgen.enums.ArtifactsType;
 import com.rccs.docgen.enums.ComponentType;
+import com.rccs.docgen.enums.DateFormatPatter;
 import com.rccs.docgen.enums.HeaderType;
 import com.rccs.docgen.enums.ScopeType;
 
 public class ProcessDocUtils {
+	
+	private static final String FTP_PATH = "ftpPath";
+	private static final String ORIGIN_PATH = "originPath";
+	
 
 	/**
 	 * Cambia el formato de la fecha al patron enviado
@@ -154,15 +161,15 @@ public class ProcessDocUtils {
 	
 	
 	
-	public static List<ArtfactsFileBean> readAllArtifacts(String pathDelivery) throws IOException {
+	public static List<ArtifactsFileBean> readAllArtifacts(String pathDelivery, DeliveryConfigBean deliveryConfig) throws IOException {
 		Path pathRoot = Paths.get(pathDelivery);
-		List<ArtfactsFileBean> result = new ArrayList<>();
+		List<ArtifactsFileBean> result = new ArrayList<>();
 
 		Files.walk(pathRoot)
 			.filter(p -> !p.getFileName().toString().equalsIgnoreCase(".DS_Store"))
 			.filter(Files::isRegularFile).forEach(path -> {
 			try {
-				ArtfactsFileBean bean = createBeanFromPath(path, pathRoot);
+				ArtifactsFileBean bean = createBeanFromPath(path, pathRoot, deliveryConfig);
 				if (bean != null) {
 					result.add(bean);
 				}
@@ -174,7 +181,7 @@ public class ProcessDocUtils {
 		return result;
 	}
 
-	private static ArtfactsFileBean createBeanFromPath(Path path, Path ROOT) throws IOException, NoSuchAlgorithmException {
+	private static ArtifactsFileBean createBeanFromPath(Path path, Path ROOT, DeliveryConfigBean deliveryConfig) throws IOException, NoSuchAlgorithmException {
 		String completePath = path.toString();
 		String fileName = path.getFileName().toString();
 		Path relative = ROOT.relativize(path);
@@ -192,36 +199,63 @@ public class ProcessDocUtils {
 			return null;
 
 		String md5 = generateMd5(path.toFile());
-		String ftpPath = buildFtpPath(relative);
+		Map<String, String> filePath = buildFtpPath(relative, deliveryConfig); 
 
-		ArtfactsFileBean bean = new ArtfactsFileBean();
+		ArtifactsFileBean bean = new ArtifactsFileBean();
 		bean.setCompletePath(completePath);
 		bean.setFileName(fileName);
 		bean.setComponentType(componentType);
 		bean.setArtifactsType(artifactsType);
 		bean.setScopeType(scopeType);
 		bean.setMd5(md5);
-		bean.setFtpPath(ftpPath);
-
+		bean.setFtpPath(filePath.get(FTP_PATH));
+		bean.setOriginPath(filePath.get(ORIGIN_PATH));
 		return bean;
 	}
 
 	private static ScopeType determineScope(Path relative) {
 		for (Path part : relative) {
 			String value = part.toString().toLowerCase();
-			if (value.equals("reverso"))
+			if (value.equalsIgnoreCase("Installer"))
+				return ScopeType.INSTALL;
+			if (value.equalsIgnoreCase("Reverser"))
 				return ScopeType.REVERSE;
-			if (value.equals("ejecucion"))
-				return ScopeType.EXECUTION;
 		}
 		return ScopeType.GENERAL; // default
 	}
 
-	private static String buildFtpPath(Path relative) {
+	private static Map<String, String> buildFtpPath(Path relative, DeliveryConfigBean deliveryConfig) {
+		Map<String, String> map = new HashMap<>();
+		
 		Path parent = relative.getParent();
 		if (parent == null)
-			return "";
-		return "/ftp/" + parent.toString().replace("\\", "/");
+			return null;
+		
+		String date = ProcessDocUtils.changeDateStringFormat(deliveryConfig.getDeliveryDate(), DateFormatPatter.GENERAL.getPattern(), DateFormatPatter.FTP.getPattern());
+		StringBuilder sbFtpPath = new StringBuilder();
+		StringBuilder sbOriginPath = new StringBuilder();
+		int count = 0;
+		int numParts = relative.getNameCount();
+		for(Path part: relative) {
+			count ++;
+			if(count == 1) {
+				sbFtpPath.append(part.toString()).append("/")
+				.append(date).append("/");
+				
+				sbOriginPath.append(part.toString()).append("/")
+				.append(date).append("/");
+			}else if(count == numParts) {
+				sbFtpPath.append(part.toString());
+			}else {
+				sbFtpPath.append(part.toString()).append("/");
+				sbOriginPath.append(part.toString()).append("/");
+			}
+		}
+		
+		map.put(FTP_PATH, deliveryConfig.getFtpBasePath() + sbFtpPath.toString().replace("\\", "/"));
+		map.put(ORIGIN_PATH, sbOriginPath.toString().replace("\\", "/"));
+		
+		return map;
 	}
 
 	private static String generateMd5(File file) throws IOException, NoSuchAlgorithmException {
@@ -243,7 +277,7 @@ public class ProcessDocUtils {
 	}
 	
 	//obtiene una lista de artefcatos en base a un header o que pertenecen a ese header
-	public static List<ArtfactsFileBean> filterArtifactByHeader(List<ArtfactsFileBean> artefactos, HeaderType header) {
+	public static List<ArtifactsFileBean> filterArtifactByHeader(List<ArtifactsFileBean> artefactos, HeaderType header) {
 	    return artefactos.stream()
 	        .filter(a -> a.getArtifactsType() != null)
 	        .filter(a -> a.getArtifactsType().getHeaderTypes().contains(header))

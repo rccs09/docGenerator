@@ -4,19 +4,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Define el tipo de artefacto a procesar
+ * extension | alcance | cabeceras
+ */
 public enum ArtifactsType {
-	ZIP(".zip", ScopeType.EXECUTION, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
+	ZIP(".zip", ScopeType.INSTALL, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
 	ZIP_REVERSO(".zip", ScopeType.REVERSE, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
 	PDF(".pdf", ScopeType.GENERAL, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION),
-	WAR(".war", ScopeType.EXECUTION, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
-	SCRIPT_EJECUCION(".sql", ScopeType.EXECUTION, HeaderType.FILE_VALIDATION, HeaderType.DB_SCRIPT),
+	WAR(".war", ScopeType.INSTALL, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
+	SCRIPT_EJECUCION(".sql", ScopeType.INSTALL, HeaderType.FILE_VALIDATION, HeaderType.DB_SCRIPT),
     SCRIPT_REVERSO(".sql", ScopeType.REVERSE, HeaderType.FILE_VALIDATION, HeaderType.DB_REVERSE_SCRIPT),
-    BAR(".bar", ScopeType.EXECUTION, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
+    BAR(".bar", ScopeType.INSTALL, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
     BAR_REVERSO(".bar", ScopeType.REVERSE, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
-    SH(".sh", ScopeType.EXECUTION, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
+    SH(".sh", ScopeType.INSTALL, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
     SH_REVERSO(".sh", ScopeType.REVERSE, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION, HeaderType.ARTIFACT_INSTALLATION),
-    APK(".zip", ScopeType.EXECUTION, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION),
-    IPA(".zip", ScopeType.EXECUTION, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION);
+    APK(".zip", ScopeType.INSTALL, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION),
+    IPA(".zip", ScopeType.INSTALL, HeaderType.FILE_VALIDATION, HeaderType.FILE_LOCATION);
     
    
 	private final String extension;

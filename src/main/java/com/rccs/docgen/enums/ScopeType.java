@@ -2,7 +2,7 @@ package com.rccs.docgen.enums;
 
 public enum ScopeType {
 	GENERAL("GENERAL"),
-	EXECUTION("EJECUCION"),
+	INSTALL("INSTALACION"),
 	REVERSE("REVERSO");
 	
 	private final String type;

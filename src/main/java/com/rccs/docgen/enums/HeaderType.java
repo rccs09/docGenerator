@@ -1,5 +1,8 @@
 package com.rccs.docgen.enums;
 
+/**
+ * Define los tipos de cabeceras de tablas que existiran en el documento
+ */
 public enum HeaderType {
 	WITHOUT_HEADER("SIN_CABECERA"), //T1, T5, T10
 	REQUEST_ORIGIN("ORIGEN_DE_LA_SOLICITUD"),//T2
